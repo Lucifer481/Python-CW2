@@ -8,12 +8,10 @@ class AntivirusGUI:
         self.setup_gui()
 
     def setup_gui(self):
-        # Create GUI components (menu, buttons, etc.)
-        pass
+        
 
     def scan_file(self):
-        # Trigger file scanning
-        pass
+       
 
 if __name__ == "__main__":
     root = tk.Tk()

@@ -1,37 +1,46 @@
-import os
 import requests
 from dotenv import load_dotenv
+import os
 
-class Antivirus:
-    def __init__(self):
-        load_dotenv()
-        self.api_key = os.getenv('VIRUSTOTAL_API_KEY')
+# Load API Key
+load_dotenv()
+api_key = os.getenv('VIRUSTOTAL_API_KEY')
 
-    def scan_file(self, file_path):
-        # Ensure the file exists
-        if not os.path.isfile(file_path):
-            return "File not found."
+def scan_file(file_path):
+    url = 'https://www.virustotal.com/vtapi/v2/file/scan'
+    params = {'apikey': api_key}
+    files = {'file': (file_path, open(file_path, 'rb'))}
+    response = requests.post(url, files=files, params=params)
 
-        # Prepare the API endpoint
-        url = 'https://www.virustotal.com/vtapi/v2/file/scan'
-        params = {'apikey': self.api_key}
+    if response.status_code == 200:
+        scan_results = response.json()
+        interpreted_results = interpret_scan_results(scan_results)
+        return interpreted_results
+    else:
+        return f"Error: {response.status_code}"
 
-        # Create a multipart-encoded request with the file
-        files = {'file': (os.path.basename(file_path), open(file_path, 'rb'))}
+def interpret_scan_results(scan_results):
+    total_engines = scan_results.get('total', 0)
+    positive_detections = scan_results.get('positives', 0)
+    
+    # Decision threshold (e.g., 10% of engines)
+    threshold = 0.1 * total_engines
 
-        try:
-            # Send the POST request to VirusTotal
-            response = requests.post(url, params=params, files=files)
+    if positive_detections > threshold:
+        threat_level = 'High'
+    elif positive_detections > 0:
+        threat_level = 'Moderate'
+    else:
+        threat_level = 'None'
 
-            # Check the response status code
-            if response.status_code == 200:
-                # Successful submission
-                result = response.json()
-                return f"File submitted for scanning. Scan ID: {result['scan_id']}"
-            else:
-                return f"Scan failed with status code: {response.status_code}"
+    detailed_results = scan_results.get('scans', {})
 
-        except Exception as e:
-            return f"Error during scanning: {str(e)}"
+    # Extracting detailed results from various antivirus engines
+    engine_results = {engine: info['detected'] for engine, info in detailed_results.items() if 'detected' in info}
 
-   
+    return {
+        'threat_level': threat_level,
+        'positive_detections': positive_detections,
+        'total_engines': total_engines,
+        'detailed_engine_results': engine_results
+    }

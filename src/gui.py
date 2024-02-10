@@ -56,88 +56,82 @@ class AntivirusGUI:
         master.config(menu=self.menu_bar)
 
     def scan_url(self):
-        url = self.url_entry.get().strip()  # Because even URLs need to look sharp
+        url = self.url_entry.get()
         if not url:
-            messagebox.showinfo("Info", "You gotta give me something to work with here. Enter a URL.")
+            messagebox.showinfo("Info", "Please enter a URL to check.")
             return
 
-    def perform_url_scan():
-        try:
-            headers = {"x-apikey": api_key}
-            response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', headers=headers, data={'url': url})
-            
-            if response.status_code == 200:
-                scan_id = response.json().get('scan_id')
-                report_url = f'https://www.virustotal.com/vtapi/v2/url/report?apikey={api_key}&resource={scan_id}'
+        def perform_url_scan():
+            try:
+                headers = {"x-apikey": api_key}
+                params = {'url': url}
+                response = requests.post('https://www.virustotal.com/api/v3/urls', headers=headers, data=params)
 
-                # Let's give it a moment to breathe, think, and analyze.
-                time.sleep(15)  # Adjust based on your pace
-                
-                report_response = requests.get(report_url)
-                if report_response.status_code == 200:
-                    report = report_response.json()
-                    detections = report.get('positives', 0)
-                    total = report.get('total', 0)
-                    message = f"Finished scanning the digital horizon. Found {detections} potential issues out of {total} checkpoints."
-                    messagebox.showinfo("URL Scan Tale", message)
+                if response.status_code == 200:
+                    url_id = response.json()['data']['id']
+                    url_id_encoded = requests.utils.quote(url_id)
+                    time.sleep(10)
+                    
+                    report_response = requests.get(f'https://www.virustotal.com/api/v3/urls/{url_id_encoded}', headers=headers)
+                    if report_response.status_code == 200:
+                        report = report_response.json()
+                        self.display_url_report(report)
+                    else:
+                        messagebox.showerror("Error", "Failed to get the report for the URL. Please try again later.")
                 else:
-                    messagebox.showerror("Oops", "Seems like I couldn't fetch the epic saga of this URL. Try again later?")
-            else:
-                messagebox.showerror("Whoa", "Couldn't even start the quest to scan this URL. Something's amiss.")
-        except Exception as e:
-            messagebox.showerror("Uh-oh", f"Stumbled upon a digital gremlin: {e}")
+                    messagebox.showerror("Error", "Failed to submit the URL for scanning.")
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred: {e}")
 
-    threading.Thread(target=perform_url_scan).start()
-                
-               
+        threading.Thread(target=perform_url_scan).start()
 
+    def scan(self, directory_path):
+        suspicious_extensions = ['.exe', '.js', '.bat', '.cmd', '.sh'] # Sample extension
+        found_suspicious_files = []
+
+        # Scan through the dir to find sispicious fiels
+        for root, dirs, files in os.walk(directory_path):
+            for file in files:
+                if any(file.endswith(ext) for ext in suspicious_extensions):
+                    found_suspicious_files.append(os.path.join(root,file))
+
+        
+        # scan delay
+        time.sleep(2)
+
+        # Display scan report
+        if found_suspicious_files:
+            report_message = f"Scan Complete. Found {len(found_suspicious_files)} suspicious files."
+            if tk.messagebox.askyesno("Scan Complete", f"{report_message}\nWould you like to see a detailed report?"):
+                detailed_report = "\n".join(found_suspicious_files)
+                self.show_detailed_report(detailed_report)
+
+        else:
+            tk.messagebox.showinfo("Scan Complete", "No suspicious files found!")
+
+    def show_detailed_report(self, report):
+    
+    # Displaying the detailed report in a new window
+        report_window = tk.Toplevel(self.master)
+        report_window.title("Detailed Scan Report")
+        text_area = tk.Text(report_window, wrap="word")
+        text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        text_area.insert(tk.END, report)
+
+    # Allow the text widget to be read-only
+        text_area.configure(state="disabled")
 
     def quick_scan(self):
-        file_path = filedialog.askopenfilename()
-        if not file_path:
-            messagebox.showinfo("Info", "No file selected.")
+    # User selects the directory to scan
+        directory_path = filedialog.askdirectory()
+        if not directory_path:
+            messagebox.showinfo("Quick Scan", "Scan cancelled, no directory selected.")
             return
 
-        progress_window = Toplevel(self.master)
-        progress_window.title("Quick Scan in Progress")
+    # Run the scan in a non-blocking way
+        threading.Thread(target=lambda: self.scan(directory_path)).start()
 
-        progress_text = Text(progress_window, height=10, width=50)
-        progress_text.pack()
-        progress_text.insert(tk.END, "Initializing quick scan...\n")
-
-        def update_progress():
-            steps = ["Scanning file signatures...", "Analyzing file behavior...", "Comparing against virus database...",
-                     "Finalizing scan results..."]
-            for step in steps:
-                time.sleep(random.randint(1, 3))  # Simulate scan time
-                progress_text.insert(tk.END, step + "\n")
-                progress_text.see(tk.END)  # Scroll to the bottom
-                progress_window.update_idletasks()  # Force window update
-
-            # Simulate scan result
-            scan_result = random.choice(["No threats found.", "Threats detected!"])
-            progress_text.insert(tk.END, f"Scan complete. {scan_result}\n")
-
-            # Add a button to close the progress window or view details
-            if "threats" in scan_result.lower():
-                result_button = Button(progress_window, text="View Threats", command=lambda: self.display_report({"threat": "Malware XYZ"}))
-            else:
-                result_button = Button(progress_window, text="Finish", command=progress_window.destroy)
-            result_button.pack(pady=10)
-
-        # Run the update progress in a separate thread to keep the GUI responsive
-        threading.Thread(target=update_progress).start()
-
-    def display_report(self, report):
-        report_window = Toplevel(self.master)
-        report_window.title("Scan Report")
-    
-        report_text = Text(report_window, wrap=tk.WORD)
-        report_text.pack(fill=tk.BOTH, expand=True)
-    
-    # Assuming 'report' is a dictionary containing the scan results
-        formatted_report = json.dumps(report, indent=4)
-        report_text.insert(tk.END, formatted_report)
+            
 
     def hash_id(self):
         # Prompt the user to select a file

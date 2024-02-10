@@ -1,13 +1,14 @@
 import os
 import tkinter as tk
 from tkinter import Listbox, filedialog, messagebox, Menu, Label, Button, Entry, Toplevel, Text, Scrollbar
+from tkinter import ttk
 from PIL import Image, ImageTk
 import requests
 import time
 import json
 import random
 import threading
-from cli import achievements
+
 
 # Load API key from environment variable
 api_key = os.getenv('VIRUSTOTAL_API_KEY')
@@ -15,7 +16,7 @@ api_key = os.getenv('VIRUSTOTAL_API_KEY')
 class AntivirusGUI:
     def __init__(self, master):
         self.master = master
-        master.title("AIM Antivirus")
+        master.title("Antivirus")
 
         # Background image
         self.bg_image = ImageTk.PhotoImage(Image.open("img/bg.jpg"))
@@ -35,9 +36,11 @@ class AntivirusGUI:
         self.url_check_button = Button(master, text="Check URL", command=self.scan_url)
         self.url_check_button.pack()
 
-        # Quick Scan Button
-        self.quick_scan_button = Button(master, text="Quick Scan", command=self.quick_scan)
+        # Quick Scan Button with Progress Bar
+        self.quick_scan_button = Button(self.master, text="Quick Scan", command=self.quick_scan)
         self.quick_scan_button.pack(pady=10)
+        self.progress = ttk.Progressbar(self.master, orient="horizontal", length=200, mode="determinate")
+        self.progress.pack(pady=5)
 
         # Hash Id Button
         self.hash_id_button = Button(master, text="Hash Id", command=self.hash_id)
@@ -71,7 +74,7 @@ class AntivirusGUI:
                 if response.status_code == 200:
                     url_id = response.json()['data']['id']
                     url_id_encoded = requests.utils.quote(url_id)
-                    time.sleep(10)
+                    time.sleep(20)
                     
                     report_response = requests.get(f'https://www.virustotal.com/api/v3/urls/{url_id_encoded}', headers=headers)
                     if report_response.status_code == 200:
@@ -87,51 +90,41 @@ class AntivirusGUI:
         threading.Thread(target=perform_url_scan).start()
 
     def scan(self, directory_path):
-        suspicious_extensions = ['.exe', '.js', '.bat', '.cmd', '.sh'] # Sample extension
+        self.progress["value"] = 0
+        self.master.update_idletasks()
+        suspicious_extensions = ['.exe', '.js', '.bat', '.cmd', '.sh']  # Sample extensions
         found_suspicious_files = []
 
-        # Scan through the dir to find sispicious fiels
         for root, dirs, files in os.walk(directory_path):
             for file in files:
                 if any(file.endswith(ext) for ext in suspicious_extensions):
-                    found_suspicious_files.append(os.path.join(root,file))
-
+                    found_suspicious_files.append(os.path.join(root, file))
+                    self.progress["value"] += 10
+                    self.master.update_idletasks()
+                    time.sleep(10)  # Simulated scan delay for demonstration
         
-        # scan delay
-        time.sleep(2)
-
-        # Display scan report
         if found_suspicious_files:
             report_message = f"Scan Complete. Found {len(found_suspicious_files)} suspicious files."
-            if tk.messagebox.askyesno("Scan Complete", f"{report_message}\nWould you like to see a detailed report?"):
+            if messagebox.askyesno("Scan Complete", f"{report_message}\nWould you like to see a detailed report?"):
                 detailed_report = "\n".join(found_suspicious_files)
                 self.show_detailed_report(detailed_report)
-
         else:
-            tk.messagebox.showinfo("Scan Complete", "No suspicious files found!")
-
-    def show_detailed_report(self, report):
-    
-    # Displaying the detailed report in a new window
-        report_window = tk.Toplevel(self.master)
-        report_window.title("Detailed Scan Report")
-        text_area = tk.Text(report_window, wrap="word")
-        text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
-        text_area.insert(tk.END, report)
-
-    # Allow the text widget to be read-only
-        text_area.configure(state="disabled")
+            messagebox.showinfo("Scan Complete", "No suspicious files found!")
 
     def quick_scan(self):
-    # User selects the directory to scan
         directory_path = filedialog.askdirectory()
         if not directory_path:
             messagebox.showinfo("Quick Scan", "Scan cancelled, no directory selected.")
             return
-
-    # Run the scan in a non-blocking way
         threading.Thread(target=lambda: self.scan(directory_path)).start()
 
+    def show_detailed_report(self, report):
+        report_window = Toplevel(self.master)
+        report_window.title("Detailed Scan Report")
+        text_area = Text(report_window, wrap="word")
+        text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        text_area.insert(tk.END, report)
+        text_area.configure(state="disabled")  # Make text area read-only
             
 
     def hash_id(self):

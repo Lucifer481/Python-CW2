@@ -38,7 +38,8 @@ class AntivirusGUI:
         self.quick_scan_button = Button(master, text="Quick Scan", command=self.quick_scan)
         self.quick_scan_button.pack(pady=10)
 
-        self.hash_id_button = Button(master, text="Hash", command=self.hash_id)
+        # Hash Id Button
+        self.hash_id_button = Button(master, text="Hash Id", command=self.hash_id)
         self.hash_id_button.pack(pady=10)
 
         # Quarantine Button
@@ -55,24 +56,41 @@ class AntivirusGUI:
         master.config(menu=self.menu_bar)
 
     def scan_url(self):
-        url = self.url_entry.get()
-        if url:
+        url = self.url_entry.get().strip()  # Because even URLs need to look sharp
+        if not url:
+            messagebox.showinfo("Info", "You gotta give me something to work with here. Enter a URL.")
+            return
+
+    def perform_url_scan():
+        try:
             headers = {"x-apikey": api_key}
-            params = {'url': url}
-            response = requests.post('https://www.virustotal.com/api/v3/urls', headers=headers, data=params)
-
+            response = requests.post('https://www.virustotal.com/vtapi/v2/url/scan', headers=headers, data={'url': url})
+            
             if response.status_code == 200:
-                # If the request was successful, submit the URL for scanning
-                url_id = response.json()['data']['id']
-                report_response = requests.get(f'https://www.virustotal.com/api/v3/urls/{url_id}', headers=headers)
+                scan_id = response.json().get('scan_id')
+                report_url = f'https://www.virustotal.com/vtapi/v2/url/report?apikey={api_key}&resource={scan_id}'
 
+                # Let's give it a moment to breathe, think, and analyze.
+                time.sleep(15)  # Adjust based on your pace
+                
+                report_response = requests.get(report_url)
                 if report_response.status_code == 200:
                     report = report_response.json()
-                    messagebox.showinfo("URL Scan Result", str(report))
+                    detections = report.get('positives', 0)
+                    total = report.get('total', 0)
+                    message = f"Finished scanning the digital horizon. Found {detections} potential issues out of {total} checkpoints."
+                    messagebox.showinfo("URL Scan Tale", message)
                 else:
-                    messagebox.showerror("Error", "Failed to get the report for the URL.")
+                    messagebox.showerror("Oops", "Seems like I couldn't fetch the epic saga of this URL. Try again later?")
             else:
-                messagebox.showerror("Error", "Failed to submit the URL for scanning.")
+                messagebox.showerror("Whoa", "Couldn't even start the quest to scan this URL. Something's amiss.")
+        except Exception as e:
+            messagebox.showerror("Uh-oh", f"Stumbled upon a digital gremlin: {e}")
+
+    threading.Thread(target=perform_url_scan).start()
+                
+               
+
 
     def quick_scan(self):
         file_path = filedialog.askopenfilename()
@@ -111,90 +129,48 @@ class AntivirusGUI:
         threading.Thread(target=update_progress).start()
 
     def display_report(self, report):
-    # Envision a window that doesn't just show, but tells a story
-        story_window = Toplevel(self.master)
-        story_window.title("Epic Scan Tale")
-
-    # The text widget becomes our canvas, where each line of the report adds to the narrative
-        epic_text = Text(story_window, wrap=tk.WORD, font=("Helvetica", 12))
-        epic_text.pack(fill=tk.BOTH, expand=True)
-
-    # We fill this canvas with the tales of our scan, each entry more intriguing than the last
-        for key, value in report.items():
-            epic_line = f"The saga of {key} unveils: {value}\n\n"
-            epic_text.insert(tk.END, epic_line)
-
-    # And what's a story without the ease of navigation? A scrollbar for the heroes who venture deep.
-        epic_scroll = Scrollbar(story_window, command=epic_text.yview)
-        epic_text.config(yscrollcommand=epic_scroll.set)
-        epic_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-
-    # As our tale concludes, the user is left with not just data, but a story etched into their digital journey.
+        report_window = Toplevel(self.master)
+        report_window.title("Scan Report")
+    
+        report_text = Text(report_window, wrap=tk.WORD)
+        report_text.pack(fill=tk.BOTH, expand=True)
+    
+    # Assuming 'report' is a dictionary containing the scan results
+        formatted_report = json.dumps(report, indent=4)
+        report_text.insert(tk.END, formatted_report)
 
     def hash_id(self):
+        # Prompt the user to select a file
         file_path = filedialog.askopenfilename()
         if not file_path:
-            messagebox.showinfo("Info", "No file selected.")
+            # User cancelled the selection
+            messagebox.showinfo("Hash ID", "No file selected.")
             return
 
-    # Prepare the file for submission to VirusTotal
-        with open(file_path, 'rb') as file:
-            files = {'file': (os.path.basename(file_path), file, 'application/octet-stream')}
-            headers = {'x-apikey': api_key}
+        # Read the file content
+        with open(file_path, 'rb') as file_to_scan:
+            files = {'file': (file_path, file_to_scan)}
 
-        # Submit the file to VirusTotal for scanning
-        response = requests.post('https://www.virustotal.com/api/v3/files', headers=headers, files=files)
+            headers = {"x-apikey": api_key}
+            response = requests.post('https://www.virustotal.com/api/v3/files', headers=headers, files=files)
 
-        if response.status_code == 200:
-            data = response.json()
-            analysis_id = data['data']['id']
-            messagebox.showinfo("Success", "File submitted successfully. Analysis ID: " + analysis_id)
+            if response.status_code == 200:
+                # The file was submitted successfully
+                data = response.json()
+                analysis_id = data['data']['id']
 
-            # Create a progress window to display scan progress
-            progress_window = Toplevel(self.master)
-            progress_window.title("Scan Progress")
+                # Retrieve the analysis results
+                report_url = f'https://www.virustotal.com/api/v3/analyses/{analysis_id}'
+                report_response = requests.get(report_url, headers=headers)
 
-            # Create a text widget to display progress updates
-            progress_text = Text(progress_window, wrap=tk.WORD)
-            progress_text.pack(fill=tk.BOTH, expand=True)
-
-            def poll_scan_status():
-                while True:
-                    time.sleep(10)  # Poll every 10 seconds
-
-                    # Check the scan status
-                    scan_status_response = requests.get(f'https://www.virustotal.com/api/v3/analyses/{analysis_id}',
-                                                        headers=headers)
-
-                    if scan_status_response.status_code == 200:
-                        scan_status_data = scan_status_response.json()
-                        scan_status = scan_status_data['data']['attributes']['status']
-
-                        # Display scan progress
-                        progress_text.insert(tk.END, f"Scan Status: {scan_status}\n")
-                        progress_text.see(tk.END)  # Scroll to the bottom
-
-                        if scan_status == 'completed':
-                            # Analysis is complete, retrieve the report
-                            report_url = f'https://www.virustotal.com/api/v3/analyses/{analysis_id}/report'
-                            report_response = requests.get(report_url, headers=headers)
-
-                            if report_response.status_code == 200:
-                                report_data = report_response.json()
-                                # Display the scan report
-                                self.display_report(report_data)
-                            else:
-                                progress_text.insert(tk.END, "Failed to get scan report.\n")
-                            break
-                    else:
-                        progress_text.insert(tk.END, "Failed to get scan status.\n")
-                        break
-
-            # Start polling for scan status in a separate thread
-            threading.Thread(target=poll_scan_status).start()
-        else:
-            messagebox.showerror("Error", "An error occurred: " + response.text)
-
+                if report_response.status_code == 200:
+                    report = report_response.json()
+                    # Show the result to the user
+                    messagebox.showinfo("Hash Id Result", str(report))
+                else:
+                    messagebox.showerror("Hash ID", "Failed to get the scan report.")
+            else:
+                messagebox.showerror("Hash ID", "Failed to submit the file for scanning.")
     
 
     def show_quarantine(self):

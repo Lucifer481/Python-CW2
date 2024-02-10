@@ -7,6 +7,7 @@ import time
 import json
 import random
 import threading
+from cli import achievements
 
 # Load API key from environment variable
 api_key = os.getenv('VIRUSTOTAL_API_KEY')

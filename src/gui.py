@@ -17,7 +17,18 @@ class AntivirusGUI:
     def __init__(self, master):
         self.master = master
         master.title("Antivirus")
+        
+        # Set a more unified and modern theme
+        self.master.configure(bg='#2D2D2D')
+        self.style = ttk.Style()
+        self.style.theme_use('clam')
+        self.style.configure('TButton', background='#4E4E4E', foreground='white', font=('Arial', 10), borderwidth=1)
+        self.style.configure('TLabel', background='#2D2D2D', foreground='white', font=('Arial', 12))
+        self.style.configure('Horizontal.TProgressbar', background='#4E9F3D')
 
+        # Replacing bg_image with a solid color background
+        self.master.config(bg="#2D2D2D")
+        
         # Background image
         self.bg_image = ImageTk.PhotoImage(Image.open("img/bg.jpg"))
         self.bg_label = Label(master, image=self.bg_image)

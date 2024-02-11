@@ -48,9 +48,9 @@ class AntivirusGUI:
         self.url_check_button.pack()
 
         # Quick Scan Button with Progress Bar
-        self.quick_scan_button = Button(self.master, text="Quick Scan", command=self.quick_scan)
+        self.quick_scan_button = ttk.Button(master, text="Quick Scan", command=self.quick_scan)
         self.quick_scan_button.pack(pady=10)
-        self.progress = ttk.Progressbar(self.master, orient="horizontal", length=200, mode="determinate")
+        self.progress = ttk.Progressbar(master, style='Horizontal.TProgressbar', orient="horizontal", length=200, mode="determinate")
         self.progress.pack(pady=5)
 
         # Hash Id Button

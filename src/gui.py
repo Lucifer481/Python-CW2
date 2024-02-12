@@ -55,5 +55,46 @@ class AntivirusGUI:
         self.content = tk.Frame(root, bg=self.light_bg)
         self.content.pack(expand=True, fill='both')
 
+    def show_dashboard(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+
+        dashboard_frame = tk.Frame(self.content, bg=self.light_bg)
+        dashboard_frame.pack(expand=True, fill='both')
+
+        # Logo and Welcome Message
+        logo_label = tk.Label(dashboard_frame, image=self.logo_img, bg=self.light_bg)
+        logo_label.image = self.logo_img
+        logo_label.pack(pady=20)
+
+        welcome_label = tk.Label(dashboard_frame, text="Welcome to Omega Antivirus", bg=self.light_bg, font=("Helvetica", 20, "bold"), fg=self.accent_color)
+        welcome_label.pack()
+
+        # System Information
+        system_info_label = tk.Label(dashboard_frame, text="System Information", bg=self.light_bg, font=("Helvetica", 16, "underline"), fg=self.accent_color)
+        system_info_label.pack(pady=10)
+
+        current_status_message = "Your PC is running smoothly. All systems are go!"
+        status_message_label = tk.Label(dashboard_frame, text=current_status_message, bg=self.light_bg, font=("Helvetica", 16), fg=self.accent_color)
+        status_message_label.pack()
+
+        system_info = {
+            "Operating System": platform.system(),
+            "Processor": platform.processor(),
+            "RAM": f"{psutil.virtual_memory().total / (1024 ** 3):.2f} GB",
+            "Storage": f"{psutil.disk_usage('/').total / (1024 ** 3):.2f} GB",
+        }
+        for key, value in system_info.items():
+            info_label = tk.Label(dashboard_frame, text=f"{key}: {value}", bg=self.light_bg, font=("Helvetica", 12))
+            info_label.pack()
+
+        
+        # Dynamic Status Indicator
+        status_label = tk.Label(dashboard_frame, text="Current PC Status", bg=self.light_bg, font=("Helvetica", 16, "underline"), fg=self.accent_color)
+        status_label.pack(pady=10)
+
+        status_indicator = tk.Label(dashboard_frame, text="Stable", bg=self.light_bg, fg=self.accent_color, font=("Helvetica", 14, "bold"))
+        status_indicator.pack()
+
 
 

@@ -48,6 +48,8 @@ bg_label.place(relwidth=1, relheight=1)
 # Protection tab
 protection_tab = ttk.Frame(content, padding=10)
 protection_tab.pack(fill='both', expand=True)
+protection_tab.grid_columnconfigure(0,weight=1)
+protection_tab.grid_rowconfigure(0,weight=1)
 
 # Load images for buttons (ensure the paths are correct)
 quick_scan_img = ImageTk.PhotoImage(Image.open('img/bg.jpg'))  # JPG image
@@ -57,3 +59,14 @@ custom_scan_img = ImageTk.PhotoImage(Image.open('img/search.png'))
 # Create a frame for the protection options
 protection_frame = tk.Frame(content, bg="white", pady=20)
 protection_frame.pack(fill="x")
+
+ # Scan options frame placed in the center
+scan_options_frame = tk.Frame(protection_tab, bg=light_bg)
+scan_options_frame.grid(row=0, column=0, sticky="nsew")
+
+        # Scan options with images, descriptions, and a touch of Omega charm
+scan_options = [
+            ("Quick Scan", quick_scan_img, "Scan the shadows where malware lurks."),
+            ("System Scan", system_scan_img, "Unleash a full-scale digital purge."),
+            ("Custom Scan", custom_scan_img, "Handpick targets or drop files for an epic scan.")
+        ]

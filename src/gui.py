@@ -52,7 +52,7 @@ protection_tab.grid_columnconfigure(0,weight=1)
 protection_tab.grid_rowconfigure(0,weight=1)
 
 # Load images for buttons (ensure the paths are correct)
-quick_scan_img = ImageTk.PhotoImage(Image.open('img/bg.jpg'))  # JPG image
+quick_scan_img = ImageTk.PhotoImage(Image.open('img/quick_scan.png'))  # JPG image
 system_scan_img = ImageTk.PhotoImage(Image.open('img/scan.png'))  # PNG image
 custom_scan_img = ImageTk.PhotoImage(Image.open('img/search.png'))
 

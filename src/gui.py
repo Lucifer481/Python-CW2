@@ -23,12 +23,14 @@ class AntivirusGUI:
         self.accent_color = '#61cf4a'
         self.light_text = "#FFFFFF"
         self.quick_scan_img = ImageTk.PhotoImage(Image.open('img/quick_scan.png'))
-        self.system_scan_img = ImageTk.PhotoImage(Image.open('img/full.png'))
-        self.custom_scan_img = ImageTk.PhotoImage(Image.open('img/quar.png'))
+        self.full_scan_img = ImageTk.PhotoImage(Image.open('img/full.png'))
+        self.real_img = ImageTk.PhotoImage(Image.open('img/pro.png'))
+        self.hash_img =ImageTk.PhotoImage(Image.open('img/hash.png'))
+        self.quarantine_img = ImageTk.PhotoImage(Image.open('img/quar.png'))
         self.logo_img = ImageTk.PhotoImage(Image.open('img/logo.png'))
         self.privacy_icon_img = ImageTk.PhotoImage(Image.open('img/logo.png'))
-        self.about_logo_img = ImageTk.PhotoImage(Image.open('img/logo.png'))
-        self.help_icon_img = ImageTk.PhotoImage(Image.open('img/logo.png'))
+        self.about_logo_img = ImageTk.PhotoImage(Image.open('img/about.png'))
+        self.help_icon_img = ImageTk.PhotoImage(Image.open('img/help.png'))
 
 
         self.setup_sidebar()
@@ -95,6 +97,30 @@ class AntivirusGUI:
 
         status_indicator = tk.Label(dashboard_frame, text="Stable", bg=self.light_bg, fg=self.accent_color, font=("Helvetica", 14, "bold"))
         status_indicator.pack()
+    
+
+    def update_content(self, text):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+        tk.Label(self.content, text=text, bg=self.light_bg, font=("Helvetica", 16)).pack(expand=True)
+
+    def show_protection_options(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+        
+        options_frame = tk.Frame(self.content, bg=self.light_bg)
+        options_frame.pack(expand=True, fill='both')
+
+        scan_options = [
+            ("Quick Scan", self.quick_scan_img, "Scans critical areas where malware usually resides.", self.quick_scan),
+            ("Advance Scan", self.full_scan_img, "Scans all your files and directories.", self.advance_scan),
+            ("Real-time Protection", self.real_img, "Turn ON Real Time Protection", self.real_time_protection),
+            ("Hash ID", self.hash_img, "Analysis The malware ID", self.hash_id),
+            ("Quarantine", self.quarantine_img, "Show malware quarantine", self.show_quarantine)
+        ]
+
+        for option, img, desc, command in scan_options:
+            self.create_scan_option(options_frame, option, img, desc, command)
 
 
 

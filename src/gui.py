@@ -70,3 +70,17 @@ scan_options = [
             ("System Scan", system_scan_img, "Unleash a full-scale digital purge."),
             ("Custom Scan", custom_scan_img, "Handpick targets or drop files for an epic scan.")
         ]
+# Configure weight for each column within scan_options_frame
+for i in range(len(scan_options)):
+            scan_options_frame.grid_columnconfigure(i, weight=1)
+
+for option, img, desc in scan_options:
+            option_frame = tk.Frame(scan_options_frame, bg="white", padx=10, pady=10, highlightbackground=accent_color, highlightthickness=2)
+            option_frame.grid(row=0, column=scan_options.index((option, img, desc)), padx=10, pady=10, sticky="nsew")
+
+            tk.Label(option_frame, image=img, bg="white").pack()
+            tk.Label(option_frame, text=option, bg="white", fg="black", font=('Arial', 14, 'bold')).pack()
+            tk.Label(option_frame, text=desc, bg="white", fg="gray").pack()
+            tk.Button(option_frame, text="Initiate Scan", bg=accent_color, fg="white", font=('Arial', 10, 'bold')).pack(pady=5)
+
+root.mainloop()

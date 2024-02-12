@@ -23,9 +23,8 @@ root.geometry("1024x768")  # Adjust to your screen
 dark_bg = "#333333"
 light_bg = "#f0f0f0"
 accent_color = "#30c030"
+light_text = "#FFFFFF"
 
-# Load images (replace 'placeholder.png' with your actual images)
-dashboard_icon = PhotoImage(file="img/scan.png")  # Replace with actual path
-protection_icon = PhotoImage(file="img/scan.png")
-privacy_icon = PhotoImage(file="img/scan.png")
-notification_icon = PhotoImage(file="img/scan.png")
+# SideBar
+sidebar = tk.Frame(root, bg=dark_bg, width=200, height=768)
+sidebar.pack(side='left', fill='y')

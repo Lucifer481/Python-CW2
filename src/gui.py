@@ -178,3 +178,13 @@ class AntivirusGUI:
             log_text.insert("end", entry + "\n")
         log_text.config(state="disabled") 
 
+    def manage_location_services(self):
+        location_settings_window = Toplevel(self.master)
+        location_settings_window.title("Location Services")
+
+        location_status_label = Label(location_settings_window, text="Location Services are currently enabled.", font=("Helvetica", 14))
+        location_status_label.pack(padx=20, pady=20)
+
+        toggle_location_button = Button(location_settings_window, text="Location Services", command=lambda: self.toggle_location(location_status_label))
+        toggle_location_button.pack(pady=10)
+

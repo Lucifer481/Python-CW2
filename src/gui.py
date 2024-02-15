@@ -192,3 +192,11 @@ class AntivirusGUI:
         current_status = status_label.cget("text")
         new_status = "Location Services are currently " + ("disabled." if "enabled" in current_status else "enabled.")
         status_label.config(text=new_status)
+
+    def review_app_permissions(self):
+        # Simulated data structure to hold app permissions and their states
+        self.app_permissions = {
+            "App1": {"Camera": True, "Microphone": False, "Location": True},
+            "App2": {"Contacts": True, "Storage": False},
+            "App3": {"Notifications": True, "Background Refresh": False}
+        }

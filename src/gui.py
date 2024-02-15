@@ -167,4 +167,14 @@ class AntivirusGUI:
         "2024-02-20 14:30:00 - Real-time protection blocked a threat.",
         "2024-02-20 09:15:00 - Update"
     ]
+        activity_log_window = Toplevel(self.master)
+        activity_log_window.title("Activity Log")
+        activity_log_window.geometry("600x400")
+    
+        log_text = Text(activity_log_window, wrap="word")
+        log_text.pack(padx=20, pady=20, fill="both", expand=True)
+    
+        for entry in activity_log:
+            log_text.insert("end", entry + "\n")
+        log_text.config(state="disabled") 
 

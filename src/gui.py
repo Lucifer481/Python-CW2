@@ -188,3 +188,7 @@ class AntivirusGUI:
         toggle_location_button = Button(location_settings_window, text="Location Services", command=lambda: self.toggle_location(location_status_label))
         toggle_location_button.pack(pady=10)
 
+    def toggle_location(self, status_label):
+        current_status = status_label.cget("text")
+        new_status = "Location Services are currently " + ("disabled." if "enabled" in current_status else "enabled.")
+        status_label.config(text=new_status)

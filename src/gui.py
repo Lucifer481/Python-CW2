@@ -121,6 +121,50 @@ class AntivirusGUI:
 
         for option, img, desc, command in scan_options:
             self.create_scan_option(options_frame, option, img, desc, command)
+    
+    def show_privacy_dashboard(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
 
+        privacy_frame = tk.Frame(self.content, bg=self.light_bg)
+        privacy_frame.pack(expand=True, fill='both')
 
+        # Privacy Icon and Message
+        privacy_icon_label = tk.Label(privacy_frame, image=self.privacy_icon_img, bg=self.light_bg)
+        privacy_icon_label.image = self.privacy_icon_img
+        privacy_icon_label.pack(pady=20)
+
+        privacy_message = "Your privacy is our top priority. Customize your settings below:"
+        privacy_message_label = tk.Label(privacy_frame, text=privacy_message, bg=self.light_bg, font=("Helvetica", 16), fg=self.accent_color)
+        privacy_message_label.pack()
+
+        # Privacy Settings
+        privacy_settings = [
+            ("Activity Log", "View your activity log", self.show_activity_log),
+            ("Location Services", "Manage apps accessing your location", self.manage_location_services),
+            ("App Permissions", "Review and adjust app permissions", self.review_app_permissions),
+            ("Browser Privacy", "Enhance your browser privacy", self.enhance_browser_privacy),
+            ("Clear History", "Clear your browsing and search history", self.clear_history)
+        ]
+
+        for option, desc, command in privacy_settings:
+            self.create_privacy_option(privacy_frame, option, desc, command)
+
+    def create_privacy_option(self, parent, text, description, command):
+        option_frame = tk.Frame(parent, bg="white", padx=10, pady=10)
+        option_frame.pack(side="left", expand=True, fill="both", padx=10)
+
+        btn = tk.Button(option_frame, text=text, compound="top", bg=self.accent_color, fg="white", command=command)
+        btn.pack(pady=5)
+
+        desc_label = tk.Label(option_frame, text=description, wraplength=150, justify="center", bg="white", fg="black")
+        desc_label.pack()
+
+    def show_activity_log(self):
+    # Mock data for the activity log
+        activity_log = [
+        "2024-02-20 10:00:00 - Full scan completed. No threats found.",
+        "2024-02-20 14:30:00 - Real-time protection blocked a threat.",
+        "2024-02-20 09:15:00 - Update"
+    ]
 

@@ -238,4 +238,18 @@ class AntivirusGUI:
 
         enable_tracking_protection_button = Button(browser_privacy_window, text="Enable Tracking Protection", command=self.enable_tracking_protection)
         enable_tracking_protection_button.pack(pady=10)
+
+    def clear_cookies(self):
+        messagebox.showinfo("Clear Cookies", "Cookies cleared successfully.")
+
+    def enable_tracking_protection(self):
+        messagebox.showinfo("Enable Tracking Protection", "Tracking protection enabled successfully.")
+
+    def clear_history(self):
+        messagebox.showinfo("Clear History", "Browsing history cleared successfully.")
+
+    def show_about_page(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+
     

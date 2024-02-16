@@ -218,3 +218,13 @@ class AntivirusGUI:
         chk = Checkbutton(parent, text=permission, variable=var, onvalue=1, offvalue=0,
                           command=lambda: self._toggle_permission(app_name, permission, var))
         chk.pack(anchor="w")
+    
+    def _toggle_permission(self, app_name, permission, var):
+        # Update the app_permissions data structure based on the checkbox state
+        self.app_permissions[app_name][permission] = bool(var.get())
+        # Placeholder for actual permission toggle logic
+        print(f"Permission {permission} for {app_name} set to {'enabled' if var.get() else 'disabled'}")
+        messagebox.showinfo("Permission Toggled", f"{permission} for {app_name} {'enabled' if var.get() else 'disabled'}.")
+
+
+    

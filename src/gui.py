@@ -1,6 +1,6 @@
 import platform
 import tkinter as tk
-from tkinter import Listbox, Text, filedialog, messagebox, Toplevel, Label, Entry, Button
+from tkinter import Checkbutton, IntVar, Listbox, Text, filedialog, messagebox, Toplevel, Label, Entry, Button
 from PIL import Image, ImageTk
 import os
 import threading
@@ -211,4 +211,10 @@ class AntivirusGUI:
 
             for permission, enabled in permissions.items():
                 self._create_permission_toggle(app_frame, app, permission, enabled)
+    
 
+    def _create_permission_toggle(self, parent, app_name, permission, enabled):
+        var = IntVar(value=enabled)
+        chk = Checkbutton(parent, text=permission, variable=var, onvalue=1, offvalue=0,
+                          command=lambda: self._toggle_permission(app_name, permission, var))
+        chk.pack(anchor="w")

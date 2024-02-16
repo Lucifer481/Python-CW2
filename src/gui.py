@@ -200,3 +200,15 @@ class AntivirusGUI:
             "App2": {"Contacts": True, "Storage": False},
             "App3": {"Notifications": True, "Background Refresh": False}
         }
+
+        permissions_window = Toplevel(self.master)
+        permissions_window.title("App Permissions")
+        permissions_window.geometry("500x400")
+
+        for app, permissions in self.app_permissions.items():
+            app_frame = tk.LabelFrame(permissions_window, text=app, padx=10, pady=10)
+            app_frame.pack(padx=10, pady=5, fill="x")
+
+            for permission, enabled in permissions.items():
+                self._create_permission_toggle(app_frame, app, permission, enabled)
+

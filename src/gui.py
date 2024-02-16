@@ -226,5 +226,16 @@ class AntivirusGUI:
         print(f"Permission {permission} for {app_name} set to {'enabled' if var.get() else 'disabled'}")
         messagebox.showinfo("Permission Toggled", f"{permission} for {app_name} {'enabled' if var.get() else 'disabled'}.")
 
+    def enhance_browser_privacy(self):
+        browser_privacy_window = Toplevel(self.master)
+        browser_privacy_window.title("Enhance Browser Privacy")
 
+        enhance_browser_label = Label(browser_privacy_window, text="Choose options to enhance your browser privacy:", font=("Helvetica", 14))
+        enhance_browser_label.pack(padx=20, pady=20)
+
+        clear_cookies_button = Button(browser_privacy_window, text="Clear Cookies", command=self.clear_cookies)
+        clear_cookies_button.pack(pady=10)
+
+        enable_tracking_protection_button = Button(browser_privacy_window, text="Enable Tracking Protection", command=self.enable_tracking_protection)
+        enable_tracking_protection_button.pack(pady=10)
     

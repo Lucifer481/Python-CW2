@@ -290,4 +290,113 @@ class AntivirusGUI:
         close_button = tk.Button(about_frame, text="Close", bg=self.accent_color, fg="white", command=lambda: self.update_content("Your PC is Great"))
         close_button.pack(pady=20)
 
+    def show_preferences_page(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+
+        preferences_frame = tk.Frame(self.content, bg=self.light_bg)
+        preferences_frame.pack(expand=True, fill='both')
+
+    # Preferences Icon and Message
+        preferences_icon_img = ImageTk.PhotoImage(Image.open('ok.png'))
+        preferences_icon_label = tk.Label(preferences_frame, image=preferences_icon_img, bg=self.light_bg)
+        preferences_icon_label.image = preferences_icon_img
+        preferences_icon_label.pack(pady=20)
+
+        preferences_message = "Customize your Cool Antivirus experience with the following preferences:"
+        preferences_message_label = tk.Label(preferences_frame, text=preferences_message, bg=self.light_bg, font=("Helvetica", 16), fg=self.accent_color)
+        preferences_message_label.pack()
+
+    # Preferences Options
+        preferences_options = [
+            ("Theme", "Choose your favorite color theme", self.choose_theme),
+            ("Language", "Select your preferred language", self.select_language),
+            ("Backup & Restore", "Backup and restore application settings", self.backup_restore_settings),
+            ("Update Preferences", "Keep your preferences up to date", self.update_preferences)
+        ]
+
+        for option, desc, command in preferences_options:
+            self.create_preferences_option(preferences_frame, option, desc, command)
+
+    def create_preferences_option(self, parent, text, description, command):
+        option_frame = tk.Frame(parent, bg="white", padx=10, pady=10)
+        option_frame.pack(side="left", expand=True, fill="both", padx=10)
+
+        btn = tk.Button(option_frame, text=text, compound="top", bg=self.accent_color, fg="white", command=command)
+        btn.pack(pady=5)
+
+        desc_label = tk.Label(option_frame, text=description, wraplength=150, justify="center", bg="white", fg="black")
+        desc_label.pack()
+
+    def choose_theme(self):
+        theme_window = Toplevel(self.master)
+        theme_window.title("Choose Theme")
+
+        theme_options = [
+            ("Dark Theme", "#333333", "#FFFFFF"),
+            ("Light Theme", "#F9FEFF", "#333333"),
+            ("Green Theme", "#4E9F3D", "#FFFFFF"),
+            ("Blue Theme", "#1976D2", "#FFFFFF"),
+        ]
+
+        for theme_name, bg_color, text_color in theme_options:
+            theme_button = Button(theme_window, text=theme_name, bg=bg_color, fg=text_color, width=20, height=2, command=lambda t=theme_name: self.apply_theme(t))
+            theme_button.pack(pady=10)
+
+    def apply_theme(self, selected_theme):
+    # Dictionary mapping theme names to corresponding colors
+        theme_colors = {
+            "Dark Theme": {"bg": "#333333", "fg": "#FFFFFF"},
+            "Light Theme": {"bg": "#F9FEFF", "fg": "#333333"},
+            "Green Theme": {"bg": "#4E9F3D", "fg": "#FFFFFF"},
+            "Blue Theme": {"bg": "#1976D2", "fg": "#FFFFFF"},
+        # Add more themes as needed
+        }
+
+    # Get the selected theme colors
+        selected_theme_colors = theme_colors.get(selected_theme, {"bg": "", "fg": ""})
+
+    # Apply the selected theme to the main window
+        self.master.configure(bg=selected_theme_colors["bg"])
+
+    # Apply the selected theme to specific widgets (example: sidebar, content area)
+        self.sidebar.configure(bg=selected_theme_colors["bg"])
+        self.content.configure(bg=selected_theme_colors["bg"])
+
+    # Apply the selected theme to text and foreground colors
+        self.light_text = selected_theme_colors["fg"]
+
+    # Inform the user that the theme has been applied
+        messagebox.showinfo("Theme Applied", f"{selected_theme} applied successfully.")
+
+    def choose_theme(self):
+        theme_window = Toplevel(self.master)
+        theme_window.title("Choose Theme")
+
+        theme_options = [
+        ("Dark Theme", "#333333", "#FFFFFF"),
+        ("Light Theme", "#F9FEFF", "#333333"),
+        ("Green Theme", "#4E9F3D", "#FFFFFF"),
+        ("Blue Theme", "#1976D2", "#FFFFFF"),
+    ]
+
+        for theme_name, bg_color, text_color in theme_options:
+            theme_button = Button(theme_window, text=theme_name, bg=bg_color, fg=text_color, width=20, height=2, command=lambda t=theme_name: self.apply_theme(t))
+            theme_button.pack(pady=10)
+    def select_language(self):
+        language_window = Toplevel(self.master)
+        language_window.title("Select Language")
+
+        language_options = [
+            ("English", "en_US"),
+            ("Spanish", "es_ES"),
+            ("French", "fr_FR"),
+            ("German", "de_DE"),
+        ]
+
+        for language_name, language_code in language_options:
+            language_button = Button(language_window, text=language_name, bg=self.accent_color, fg="white", width=20, height=2, command=lambda l=language_name: self.apply_language(l))
+            language_button.pack(pady=10)
+
+
     

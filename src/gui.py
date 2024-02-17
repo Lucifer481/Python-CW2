@@ -252,4 +252,42 @@ class AntivirusGUI:
         for widget in self.content.winfo_children():
             widget.destroy()
 
+        about_frame = tk.Frame(self.content, bg=self.light_bg)
+        about_frame.pack(expand=True, fill='both')
+
+    # Cool logo or image for your application
+        about_logo_img = ImageTk.PhotoImage(Image.open('logo.png'))
+        about_logo_label = tk.Label(about_frame, image=about_logo_img, bg=self.light_bg)
+        about_logo_label.image = about_logo_img
+        about_logo_label.pack(pady=20)
+
+    # Application Name and Version
+        app_name_label = tk.Label(about_frame, text="Cool Antivirus", font=("Helvetica", 24, "bold"), fg=self.accent_color, bg=self.light_bg)
+        app_version_label = tk.Label(about_frame, text="Version 1.0", font=("Helvetica", 16), fg="gray", bg=self.light_bg)
+        app_name_label.pack()
+        app_version_label.pack(pady=10)
+
+    # Description
+        about_description = (
+            "Cool Antivirus is a state-of-the-art application designed to protect your PC from all kinds of cyber threats. "
+            "With advanced scanning options, real-time protection, and enhanced privacy controls, your digital world is in safe hands."
+        )
+        description_label = tk.Label(about_frame, text=about_description, font=("Helvetica", 14), wraplength=600, justify="center", bg=self.light_bg, fg="black")
+        description_label.pack(pady=20)
+
+    # Credits and Acknowledgments
+        credits_label = tk.Label(about_frame, text="Credits & Acknowledgments", font=("Helvetica", 18, "bold"), fg=self.accent_color, bg=self.light_bg)
+        credits_label.pack(pady=10)
+
+        about_credits = (
+            "Special thanks to our amazing development team for bringing this application to life. "
+            "We also extend our gratitude to the open-source community and everyone who contributed to the success of Cool Antivirus."
+        )
+        credits_description_label = tk.Label(about_frame, text=about_credits, font=("Helvetica", 14), wraplength=600, justify="center", bg=self.light_bg, fg="black")
+        credits_description_label.pack(pady=20)
+
+    # Close button
+        close_button = tk.Button(about_frame, text="Close", bg=self.accent_color, fg="white", command=lambda: self.update_content("Your PC is Great"))
+        close_button.pack(pady=20)
+
     

@@ -398,5 +398,71 @@ class AntivirusGUI:
             language_button = Button(language_window, text=language_name, bg=self.accent_color, fg="white", width=20, height=2, command=lambda l=language_name: self.apply_language(l))
             language_button.pack(pady=10)
 
+    def apply_language(self, selected_language):
+    # Dictionary mapping language names to corresponding translations
+        language_translations = {
+        "English": {
+            "Dashboard": "Dashboard",
+            "Protection": "Protection",
+            "Privacy": "Privacy",
+            "Notifications": "Notifications",
+            "My Account": "My Account",
+            "Preferences": "Preferences",
+            "Help": "Help",
+            "Your PC is Great": "Your PC is Great",
+            "Privacy Settings": "Privacy Settings",
+            "No new notifications": "No new notifications",
+            "Account Information": "Account Information",
+            "Set your preferences": "Set your preferences",
+            "Get Help and Support": "Get Help and Support",
+            "Quick Scan": "Quick Scan",
+            "Advance Scan": "Advance Scan",
+            "Real-time Protection": "Real-time Protection",
+            "Hash ID": "Hash ID",
+            "Quarantine": "Quarantine",
+            "Activity Log": "Activity Log",
+            "View your activity log": "View your activity log",
+            "Location Services": "Location Services",
+            "Manage apps accessing your location": "Manage apps accessing your location",
+            "App Permissions": "App Permissions",
+            "Review and adjust app permissions": "Review and adjust app permissions",
+            "Browser Privacy": "Browser Privacy",
+            "Enhance your browser privacy": "Enhance your browser privacy",
+            "Clear History": "Clear History",
+            "Choose options to enhance your browser privacy:": "Choose options to enhance your browser privacy:",
+            "Clear Cookies": "Clear Cookies",
+            "Enable Tracking Protection": "Enable Tracking Protection",
+            "File Submitted": "File Submitted",
+            "Failed to submit the file for scanning. Error code:": "Failed to submit the file for scanning. Error code:",
+            "Scanned": "Scanned",
+            "suspicious files detected in": "suspicious files detected in",
+            "Scan cancelled, no directory selected.": "Scan cancelled, no directory selected.",
+            "Failed to get the scan report.": "Failed to get the scan report.",
+            "Failed to submit the file for scanning.": "Failed to submit the file for scanning.",
+            "No file selected.": "No file selected.",
+            "Scan Complete": "Scan Complete",
+            "Detailed Scan Report": "Detailed Scan Report",
+            "Suspicious Files": "Suspicious Files",
+            "malicious_file_1.exe": "malicious_file_1.exe",
+            "malicious_file_2.exe": "malicious_file_2.exe",
+            "Detailed Report": "Detailed Report",
+            "Suspicious File Details": "Suspicious File Details",
+            "Hash Id Result": "Hash Id Result",
+            "Choose a file to scan": "Choose a file to scan",
+            "Toggle Location Services": "Toggle Location Services",
+            "Location Services are currently enabled.": "Location Services are currently enabled.",
+            "Location Services are currently disabled.": "Location Services are currently disabled.",
+            "Review and adjust app permissions": "Review and adjust app permissions",
+            "Tracking protection enabled successfully.": "Tracking protection enabled successfully.",
+            "Browsing history cleared successfully.": "Browsing history cleared successfully.",
+            "Cookies cleared successfully.": "Cookies cleared successfully.",
+            "Clear Cookies": "Clear Cookies",
+            "Enable Tracking Protection": "Enable Tracking Protection",
+            "Clear History": "Clear History"
+        },
+        # Add more languages and their translations as needed
+    }
+
+
 
     

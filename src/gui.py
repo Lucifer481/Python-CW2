@@ -676,6 +676,14 @@ class AntivirusGUI:
         option_frame = tk.Frame(parent, bg="white", padx=10, pady=10, highlightbackground=self.accent_color, highlightthickness=2)
         option_frame.pack(side="left", expand=True, fill="both", padx=10)
 
+        btn = tk.Button(option_frame, image=image, text=text, compound="top", bg=self.accent_color, fg="white", command=command)
+        btn.image = image
+        btn.pack(pady=5)
+
+        desc_label = tk.Label(option_frame, text=description, wraplength=150, justify="center", bg="white", fg="black")
+        desc_label.pack()
+
+
 
 
 

@@ -1,6 +1,7 @@
 import platform
 import tkinter as tk
 from tkinter import Checkbutton, IntVar, Listbox, Text, filedialog, messagebox, Toplevel, Label, Entry, Button
+from tkinter import simpledialog
 from PIL import Image, ImageTk
 import os
 import threading
@@ -588,6 +589,61 @@ class AntivirusGUI:
     
 },
     }
+        
+
+         # Update text content based on the selected language
+        for widget in self.sidebar.winfo_children():
+            if isinstance(widget, Button):
+                widget.config(text=language_translations[selected_language].get(widget.cget("text"), widget.cget("text")))
+
+        for widget in self.content.winfo_children():
+            if isinstance(widget, Label):
+                widget.config(text=language_translations[selected_language].get(widget.cget("text"), widget.cget("text")))
+
+    # Inform the user that the language has been applied
+        messagebox.showinfo("Language Applied", f"{selected_language} language applied successfully.")
+
+
+    def backup_restore_settings(self):
+    # Placeholder logic for backup and restore settings
+        backup_location = filedialog.askdirectory()
+        if backup_location:
+            messagebox.showinfo("Backup & Restore", f"Settings backed up to {backup_location}")
+        else:
+            messagebox.showwarning("Backup & Restore", "Backup cancelled.")
+
+    def update_preferences(self):
+    # Placeholder logic to update preferences
+        new_preference_value = simpledialog.askstring("Update Preferences", "Enter new preference value:")
+        if new_preference_value:
+            messagebox.showinfo("Update Preferences", f"Preferences updated successfully. New value: {new_preference_value}")
+        else:
+            messagebox.showwarning("Update Preferences", "Update preferences cancelled.")
+
+
+    def show_help(self):
+        for widget in self.content.winfo_children():
+            widget.destroy()
+
+        help_frame = tk.Frame(self.content, bg=self.light_bg)
+        help_frame.pack(expand=True, fill='both')
+
+    # Help Icon and Message
+        help_icon_label = tk.Label(help_frame, image=self.help_icon_img, bg=self.light_bg)
+        help_icon_label.image = self.help_icon_img
+        help_icon_label.pack(pady=20)
+
+        help_message = "Need assistance? Check out our help resources or contact support:"
+        help_message_label = tk.Label(help_frame, text=help_message, bg=self.light_bg, font=("Helvetica", 16), fg=self.accent_color)
+        help_message_label.pack()
+
+    # Help Options
+        help_options = [
+            ("Knowledge Base", "Explore our knowledge base for guides and tutorials", self.explore_knowledge_base),
+            ("Contact Support", "Get in touch with our support team", self.contact_support),
+            ("FAQs", "Find answers to frequently asked questions", self.show_faqs)
+        ]
+
 
 
 

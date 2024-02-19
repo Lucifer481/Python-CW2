@@ -644,6 +644,39 @@ class AntivirusGUI:
             ("FAQs", "Find answers to frequently asked questions", self.show_faqs)
         ]
 
+    for option, desc, command in help_options:
+            self.create_help_option(help_frame, option, desc, command)
+
+    def create_help_option(self, parent, text, description, command):
+        option_frame = tk.Frame(parent, bg="white", padx=10, pady=10)
+        option_frame.pack(side="left", expand=True, fill="both", padx=10)
+
+        btn = tk.Button(option_frame, text=text, compound="top", bg=self.accent_color, fg="white", command=command)
+        btn.pack(pady=5)
+
+        desc_label = tk.Label(option_frame, text=description, wraplength=150, justify="center", bg="white", fg="black")
+        desc_label.pack()
+
+    def explore_knowledge_base(self):
+        knowledge_base_window = Toplevel(self.master)
+        knowledge_base_window.title("Knowledge Base")
+        Label(knowledge_base_window, text="Explore our knowledge base for helpful guides and tutorials.", font=("Helvetica", 14)).pack(padx=20, pady=20)
+
+    def contact_support(self):
+        support_window = Toplevel(self.master)
+        support_window.title("Contact Support")
+        Label(support_window, text="For assistance, please contact our support team at support@example.com.", font=("Helvetica", 14)).pack(padx=20, pady=20)
+
+    def show_faqs(self):
+        faqs_window = Toplevel(self.master)
+        faqs_window.title("Frequently Asked Questions")
+        Label(faqs_window, text="Find answers to common questions in our FAQs section.", font=("Helvetica", 14)).pack(padx=20, pady=20)
+
+    def create_scan_option(self, parent, text, image, description, command):
+        option_frame = tk.Frame(parent, bg="white", padx=10, pady=10, highlightbackground=self.accent_color, highlightthickness=2)
+        option_frame.pack(side="left", expand=True, fill="both", padx=10)
+
+
 
 
 

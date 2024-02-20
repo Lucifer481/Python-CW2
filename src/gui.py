@@ -704,6 +704,14 @@ class AntivirusGUI:
                 self.show_detailed_report(detailed_report)
         else:
             messagebox.showinfo("Scan Complete", "No suspicious files found!")
+    
+
+    def quick_scan(self):
+        directory_path = filedialog.askdirectory()
+        if not directory_path:
+            messagebox.showinfo("Quick Scan", "Scan cancelled, no directory selected.")
+            return
+        threading.Thread(target=lambda: self.scan(directory_path)).start()
 
 
 

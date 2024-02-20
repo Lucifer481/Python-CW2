@@ -695,7 +695,15 @@ class AntivirusGUI:
                     self.progress["value"] += 10
                     self.master.update_idletasks()
                     time.sleep(10)  # Simulated scan delay for demonstration
+
         
+        if found_suspicious_files:
+            report_message = f"Scan Complete. Found {len(found_suspicious_files)} suspicious files."
+            if messagebox.askyesno("Scan Complete", f"{report_message}\nWould you like to see a detailed report?"):
+                detailed_report = "\n".join(found_suspicious_files)
+                self.show_detailed_report(detailed_report)
+        else:
+            messagebox.showinfo("Scan Complete", "No suspicious files found!")
 
 
 

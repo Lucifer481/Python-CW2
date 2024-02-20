@@ -683,6 +683,20 @@ class AntivirusGUI:
         desc_label = tk.Label(option_frame, text=description, wraplength=150, justify="center", bg="white", fg="black")
         desc_label.pack()
 
+    def scan(self, directory_path):
+        self.master.update_idletasks()
+        suspicious_extensions = ['.exe', '.js', '.bat', '.cmd', '.sh']  # Sample extensions
+        found_suspicious_files = []
+
+        for root, dirs, files in os.walk(directory_path):
+            for file in files:
+                if any(file.endswith(ext) for ext in suspicious_extensions):
+                    found_suspicious_files.append(os.path.join(root, file))
+                    self.progress["value"] += 10
+                    self.master.update_idletasks()
+                    time.sleep(10)  # Simulated scan delay for demonstration
+        
+
 
 
 

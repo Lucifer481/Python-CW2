@@ -801,7 +801,24 @@ class AntivirusGUI:
         if any(keyword in file_name.lower() for keyword in suspicious_keywords):
             return True
         return False
-   
+    
+    def start_advance_scan(self, directory, file_types):
+        # Adjusted to use self.is_file_suspicious
+        if not directory or not file_types:
+            messagebox.showerror("Error", "Please select a directory and specify file types to scan.")
+            return
+        file_types_list = [file_type.strip() for file_type in file_types.split(',')]
+        scanned_files_count = 0
+        suspicious_files_count = 0
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if any(file.endswith(file_type) for file_type in file_types_list):
+                    scanned_files_count += 1
+                    if self.is_file_suspicious(file):
+                        suspicious_files_count += 1
+                        print(f"Suspicious file detected: {os.path.join(root, file)}")
+        messagebox.showinfo("Scan Complete", f"Scanned {scanned_files_count} files; {suspicious_files_count} suspicious files detected in {directory}.")
+
 
 
 

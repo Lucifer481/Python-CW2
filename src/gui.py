@@ -754,6 +754,36 @@ class AntivirusGUI:
                     messagebox.showerror("Hash ID", "Failed to get the scan report.")
             else:
                 messagebox.showerror("Hash ID", "Failed to submit the file for scanning.")
+    
+
+    def show_quarantine(self):
+        quarantine_window = Toplevel(self.master)
+        quarantine_window.title("Quarantined Items")
+
+        listbox = Listbox(quarantine_window)
+        listbox.pack(fill="both", expand=True)
+
+        # Just as an example, add some dummy items to the listbox
+        listbox.insert("end", "malicious_file_1.exe")
+        listbox.insert("end", "malicious_file_2.exe")
+
+    def advance_scan(self):
+        advance_scan_window = Toplevel(self.master)
+        advance_scan_window.title("Advance Scan Options")
+    
+        # Directory selection
+        Label(advance_scan_window, text="Select directory for scanning:").pack()
+        directory_entry = Entry(advance_scan_window, width=50)
+        directory_entry.pack()
+        Button(advance_scan_window, text="Browse...", command=lambda: self.select_directory(directory_entry)).pack()
+
+        # File types to scan
+        Label(advance_scan_window, text="File types to scan (e.g., .exe, .pdf):").pack()
+        file_types_entry = Entry(advance_scan_window, width=50)
+        file_types_entry.pack()
+
+        # Scan button
+        Button(advance_scan_window, text="Start Scan", command=lambda: self.start_advance_scan(directory_entry.get(), file_types_entry.get())).pack()
 
 
    

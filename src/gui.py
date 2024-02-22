@@ -785,7 +785,22 @@ class AntivirusGUI:
         # Scan button
         Button(advance_scan_window, text="Start Scan", command=lambda: self.start_advance_scan(directory_entry.get(), file_types_entry.get())).pack()
 
+    def select_directory(self, entry_widget):
+        directory = filedialog.askdirectory()
+        entry_widget.delete(0, tk.END)
+        entry_widget.insert(0, directory)
 
+    def is_file_suspicious(self, file_name):
+        # Simulated database of suspicious file criteria
+        suspicious_extensions = ['.exe', '.dll', '.bat', '.scr']
+        suspicious_keywords = ['keygen', 'crack', 'patch']
+
+        # Check if the file matches any suspicious patterns
+        if any(file_name.endswith(ext) for ext in suspicious_extensions):
+            return True
+        if any(keyword in file_name.lower() for keyword in suspicious_keywords):
+            return True
+        return False
    
 
 

@@ -645,7 +645,7 @@ class AntivirusGUI:
         ]
 
     for option, desc, command in help_options:
-            self.create_help_option(help_frame, option, desc, command)
+        self.create_help_option(help_frame, option, desc, command)
 
     def create_help_option(self, parent, text, description, command):
         option_frame = tk.Frame(parent, bg="white", padx=10, pady=10)
@@ -713,8 +713,17 @@ class AntivirusGUI:
             return
         threading.Thread(target=lambda: self.scan(directory_path)).start()
 
+    
+    def show_detailed_report(self, report):
+        report_window = Toplevel(self.master)
+        report_window.title("Detailed Scan Report")
+        text_area = Text(report_window, wrap="word")
+        text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+        text_area.insert(tk.END, report)
+        text_area.configure(state="disabled")  # Make text area read-only
 
 
+   
 
 
 

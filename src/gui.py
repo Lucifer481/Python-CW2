@@ -15,7 +15,7 @@ api_key = os.getenv('VIRUSTOTAL_API_KEY')
 class AntivirusGUI:
     def __init__(self, master):
         self.master = master
-        master.title('Antivirus')
+        master.title('Omega Antivirus')
         master.geometry('1024x768')
 
          # Define colors and load images
@@ -644,8 +644,8 @@ class AntivirusGUI:
             ("FAQs", "Find answers to frequently asked questions", self.show_faqs)
         ]
 
-    for option, desc, command in help_options:
-        self.create_help_option(help_frame, option, desc, command)
+        for option, desc, command in help_options:
+            self.create_help_option(help_frame, option, desc, command)
 
     def create_help_option(self, parent, text, description, command):
         option_frame = tk.Frame(parent, bg="white", padx=10, pady=10)
@@ -721,6 +721,39 @@ class AntivirusGUI:
         text_area.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
         text_area.insert(tk.END, report)
         text_area.configure(state="disabled")  # Make text area read-only
+
+    def hash_id(self):
+        # Prompt the user to select a file
+        file_path = filedialog.askopenfilename()
+        if not file_path:
+            # User cancelled the selection
+            messagebox.showinfo("Hash ID", "No file selected.")
+            return
+        
+        # Read the file content
+        with open(file_path, 'rb') as file_to_scan:
+            files = {'file': (file_path, file_to_scan)}
+
+            headers = {"x-apikey": api_key}
+            response = requests.post('https://www.virustotal.com/api/v3/files', headers=headers, files=files)
+
+            if response.status_code == 200:
+                # The file was submitted successfully
+                data = response.json()
+                analysis_id = data['data']['id']
+
+                # Retrieve the analysis results
+                report_url = f'https://www.virustotal.com/api/v3/analyses/{analysis_id}'
+                report_response = requests.get(report_url, headers=headers)
+
+                if report_response.status_code == 200:
+                    report = report_response.json()
+                    # Show the result to the user
+                    messagebox.showinfo("Hash Id Result", str(report))
+                else:
+                    messagebox.showerror("Hash ID", "Failed to get the scan report.")
+            else:
+                messagebox.showerror("Hash ID", "Failed to submit the file for scanning.")
 
 
    

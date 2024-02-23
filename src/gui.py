@@ -818,6 +818,14 @@ class AntivirusGUI:
                         suspicious_files_count += 1
                         print(f"Suspicious file detected: {os.path.join(root, file)}")
         messagebox.showinfo("Scan Complete", f"Scanned {scanned_files_count} files; {suspicious_files_count} suspicious files detected in {directory}.")
+    
+    def real_time_protection(self):
+        if hasattr(self, 'real_time_protection_status') and self.real_time_protection_status:
+            self.real_time_protection_status = False
+            messagebox.showinfo("Real-time Protection", "Real-time protection disabled.")
+        else:
+            self.real_time_protection_status = True
+            messagebox.showinfo("Real-time Protection", "Real-time protection enabled.")
 
 
 

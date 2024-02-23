@@ -828,6 +828,11 @@ class AntivirusGUI:
             messagebox.showinfo("Real-time Protection", "Real-time protection enabled.")
 
 
+# Main application setup
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = AntivirusGUI(root)
+    root.mainloop()
 
 
     

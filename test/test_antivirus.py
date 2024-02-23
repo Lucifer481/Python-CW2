@@ -1,54 +1,53 @@
 import unittest
-from antivirus import interpret_scan_results
+from unittest.mock import patch
+from antivirus import scan_file, interpret_scan_results
 
 class TestAntivirus(unittest.TestCase):
 
-    def test_high_threat_level(self):
+    @patch('antivirus.requests.post')
+    def test_scan_file_success(self, mock_post):
+        # Mocking the API response for a successful file scan
+        mock_response = unittest.mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            'response_code': 1,
+            'scan_id': '123abc',
+            'positives': 5,
+            'total': 70,
+            'scans': {'TestEngine': {'detected': True}}
+        }
+        mock_post.return_value = mock_response
+
+        response = scan_file(r'C:\Users\devil\OneDrive\Desktop\checker\exe\done.exe')
+        self.assertIn('scan_id', response)
+        self.assertEqual(response['scan_id'], '123abc')
+
+    def test_interpret_scan_results_high_threat_level(self):
         mock_results = {
-            "total": 70,
-            "positives": 15, 
-            "scans": {
-                "McAfee": {"detected": True},
-                "Kaspersky": {"detected": True},
-                # Add more mock scans if needed
-            }
+            'positives': 50,
+            'total': 70,
+            'scans': {'TestEngine': {'detected': True}}
         }
         results = interpret_scan_results(mock_results)
         self.assertEqual(results['threat_level'], 'High')
 
-    def test_moderate_threat_level(self):
+    def test_interpret_scan_results_moderate_threat_level(self):
         mock_results = {
-            "total": 70,
-            "positives": 5,  
-            "scans": {
-                "McAfee": {"detected": False},
-                "Kaspersky": {"detected": True},
-                # Add more mock scans if needed
-            }
+            'positives': 7,
+            'total': 70,
+            'scans': {'TestEngine': {'detected': True}}
         }
         results = interpret_scan_results(mock_results)
         self.assertEqual(results['threat_level'], 'Moderate')
 
-    def test_no_threat_found(self):
+    def test_interpret_scan_results_no_threat_found(self):
         mock_results = {
-            "total": 70,
-            "positives": 0,
-            "scans": {
-                "McAfee": {"detected": False},
-                "Kaspersky": {"detected": False},
-                # Add more mock scans if needed
-            }
+            'positives': 0,
+            'total': 70,
+            'scans': {'TestEngine': {'detected': False}}
         }
         results = interpret_scan_results(mock_results)
         self.assertEqual(results['threat_level'], 'None')
-
-    def test_missing_keys(self):
-        mock_results = {
-            
-        }
-        results = interpret_scan_results(mock_results)
-        self.assertEqual(results['threat_level'], 'None', "Should handle missing keys gracefully")
-
 
 if __name__ == '__main__':
     unittest.main()

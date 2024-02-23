@@ -45,9 +45,9 @@ class AntivirusGUI:
             "Dashboard": self.show_dashboard,
             "Protection": self.show_protection_options,
             "Privacy": self.show_privacy_dashboard,
-            "About":self.show_about,
-            "Setting": lambda: self.update_content("Set your preferences"),
-            "Help": lambda: self.update_content("Get Help and Support")
+            "About": self.show_about_page,
+            "Preferences": self.show_preferences_page,
+            "Help": self.show_help
         }
 
         for text, command in buttons_info.items():
@@ -257,7 +257,7 @@ class AntivirusGUI:
         about_frame.pack(expand=True, fill='both')
 
     # Cool logo or image for your application
-        about_logo_img = ImageTk.PhotoImage(Image.open('logo.png'))
+        about_logo_img = ImageTk.PhotoImage(Image.open('img/about.png'))
         about_logo_label = tk.Label(about_frame, image=about_logo_img, bg=self.light_bg)
         about_logo_label.image = about_logo_img
         about_logo_label.pack(pady=20)
@@ -299,7 +299,7 @@ class AntivirusGUI:
         preferences_frame.pack(expand=True, fill='both')
 
     # Preferences Icon and Message
-        preferences_icon_img = ImageTk.PhotoImage(Image.open('ok.png'))
+        preferences_icon_img = ImageTk.PhotoImage(Image.open('img/pref.png'))
         preferences_icon_label = tk.Label(preferences_frame, image=preferences_icon_img, bg=self.light_bg)
         preferences_icon_label.image = preferences_icon_img
         preferences_icon_label.pack(pady=20)
